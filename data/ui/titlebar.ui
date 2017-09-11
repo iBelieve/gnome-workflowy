@@ -24,6 +24,7 @@
         <property name="receives_default">True</property>
         <property name="no_show_all">True</property>
         <property name="image">refresh</property>
+        <signal name="clicked" handler="on_refresh_clicked" swapped="no"/>
       </object>
     </child>
     <child type="title">

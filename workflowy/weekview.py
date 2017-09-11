@@ -48,15 +48,18 @@ class DayView(Gtk.Bin):
         if day is not None:
             self.date = day_this_week(day)
 
-            self.label.props.label = f"{self.date.day} {calendar.day_name[day]}"
+            label = f"{self.date.day} {calendar.day_name[day]}"
+            if self.date == TODAY:
+                self.label.set_markup(f'<b>{label}</b>')
+            else:
+                self.label.props.label = label
 
             if self.date < TODAY:
-                self.props.opacity = 0.5
+                self.props.opacity = 0.6
         else:
             self.label.props.label = 'Unscheduled'
 
     def set_events(self, events):
-        print(events)
         for row in self.rows:
             self.listbox.remove(row)
 
@@ -78,10 +81,25 @@ class DayView(Gtk.Bin):
 class TaskListRow(Gtk.ListBoxRow):
     def __init__(self, task):
         super().__init__(selectable=False, activatable=True)
+        self.task = task
 
-        self.label = Gtk.Label(xalign=0, wrap=True,
-                               margin_left=8, margin_right=8,
-                               margin_top=4, margin_bottom=4)
-        self.add(self.label)
+        self.row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8,
+                           margin_left=8, margin_right=8,
+                           margin_top=4, margin_bottom=4)
+        self.add(self.row)
 
-        self.label.props.label = task.stripped_name
+        self.checkbox = Gtk.CheckButton(active=task.is_completed, valign=Gtk.Align.CENTER)
+        self.checkbox.connect('toggled', self.on_toggled)
+        self.row.add(self.checkbox)
+
+        self.label = Gtk.Label(xalign=0, wrap=True)
+        self.row.add(self.label)
+
+        self.set_completed(task.is_completed)
+
+    def on_toggled(self, checkbox):
+        self.set_completed(checkbox.props.active)
+
+    def set_completed(self, completed):
+        self.label.props.opacity = 0.5 if completed else 1.0
+        self.label.set_markup(f'<s>{self.task.name}</s>' if completed else self.task.name)

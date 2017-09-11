@@ -80,11 +80,17 @@ class Workflowy(GObject.Object):
 
 
 class Node:
-    def __init__(self, id, nm, no=None, ch=None, **kwargs):
+    def __init__(self, id, nm, lm, cp=None, no=None, ch=None, **kwargs):
         self.id = id
         self.name = nm
         self.note = no
+        self.last_modified_at = lm
+        self.completed_at = cp
         self.children = [Node(**d) for d in ch] if ch else list()
+
+    @property
+    def is_completed(self):
+        return self.completed_at is not None
 
     @property
     def stripped_name(self):

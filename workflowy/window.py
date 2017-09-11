@@ -49,6 +49,9 @@ class Window(Gtk.ApplicationWindow):
 
     # Signal handlers
 
+    def on_refresh_clicked(self, button):
+        self.workflowy.refresh()
+
     def on_signed_in_changed(self, workflowy, is_signed_in):
         print(is_signed_in)
         if is_signed_in:
