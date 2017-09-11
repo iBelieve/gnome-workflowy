@@ -63,6 +63,8 @@ class DayView(Gtk.Bin):
         for row in self.rows:
             self.listbox.remove(row)
 
+        self.rows = []
+
         for event in events:
             row = TaskListRow(event)
             row.show_all()
