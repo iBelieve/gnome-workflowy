@@ -3,6 +3,7 @@ import threading
 from datetime import date, timedelta
 from inspect import signature
 from gi.repository import GLib
+from html.parser import HTMLParser
 
 
 WEEK = [calendar.SUNDAY, calendar.MONDAY, calendar.TUESDAY, calendar.WEDNESDAY,
@@ -34,3 +35,24 @@ def do_async(target, on_done=None, on_error=None):
     thread = threading.Thread(target=background_task)
     thread.daemon = True
     thread.start()
+
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.reset()
+        self.strict = False
+        self.convert_charrefs= True
+        self.fed = []
+
+    def handle_data(self, d):
+        self.fed.append(d)
+
+    def get_data(self):
+        return ''.join(self.fed)
+
+
+def strip_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()

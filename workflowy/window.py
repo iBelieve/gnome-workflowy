@@ -36,7 +36,7 @@ class Window(Gtk.ApplicationWindow):
         self.main_stack.add(self.signin)
 
     def setup_weekview(self):
-        self.weekview = WeekView()
+        self.weekview = WeekView(self.workflowy.planner)
         self.weekview.show()
         self.main_stack.add(self.weekview)
 
